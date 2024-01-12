@@ -1,0 +1,61 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: efs-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: efs-sc
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: efs-pod
+spec:
+  restartPolicy: Never
+  initContainers:
+  - name: initializer
+    image: busybox
+    imagePullPolicy: IfNotPresent
+    command:
+    - /bin/sh
+    - '-c'
+    args:
+    - >-
+      echo 'Hello from EFS' > /data/hello.txt &&
+      ls -la /data
+    volumeMounts:
+    - name: efs
+      mountPath: /data
+
+  containers:
+  - name: echo
+    image: busybox
+    imagePullPolicy: IfNotPresent
+    command:
+    - /bin/sh
+    - '-c'
+    args:
+    - >-
+      cat /data/hello.txt 
+
+    volumeMounts:
+    - name: efs
+      mountPath: /data
+
+    resources:
+      requests:
+        memory: "64Mi" 
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+
+  volumes:
+  - name: efs
+    persistentVolumeClaim:
+      claimName: efs-claim

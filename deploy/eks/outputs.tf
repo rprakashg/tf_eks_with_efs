@@ -22,3 +22,8 @@ output "cluster_name" {
   description = "Kubernetes Cluster Name"
   value       = var.name
 }
+
+output "efsid" {
+  description = "The ID that identifies the file system (e.g. `fs-09257f22b81a6ca3b`)
+  value = module.efs.id
+}
