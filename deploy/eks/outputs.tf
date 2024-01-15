@@ -24,6 +24,6 @@ output "cluster_name" {
 }
 
 output "efsid" {
-  description = "The ID that identifies the file system (e.g. `fs-09257f22b81a6ca3b`)
+  description = "The ID that identifies the file system (e.g. `fs-09257f22b81a6ca3b`)"
   value = module.efs.id
 }
